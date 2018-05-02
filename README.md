@@ -47,7 +47,7 @@ Uninstalling is simple and is done through dpkg.
 sudo apt remove firefox-vendor
 ```
 
-##Conflicts with distribution packages
+## Conflicts with distribution packages
 The name of this package is `firefox-vendor` instead of `firefox` to
 avoid conflict with distribution packages. Additionally, this package
 installs Firefox into a directory inside of `/opt`, meaning it should
