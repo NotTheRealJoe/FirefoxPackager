@@ -38,6 +38,12 @@ Type=Application
 Categories=Internet;
 Keywords=internet;browser;web;mozilla;" > firefox-vendor/usr/share/applications/firefox.desktop
 
+# Copy post-installation script into the proper place for the package
+cp post-installation.sh firefox-vendor/DEBIAN/postinst
+chmod 755 firefox-vendor/DEBIAN/postinst
+cp pre-remove.sh firefox-vendor/DEBIAN/prerm
+chmod 755 firefox-vendor/DEBIAN/prerm
+
 # Build the package
 chmod g-s firefox-vendor/DEBIAN
 chmod 755 firefox-vendor/DEBIAN
