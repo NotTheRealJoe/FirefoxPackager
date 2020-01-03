@@ -10,9 +10,13 @@ mkdir firefox-vendor
 mkdir firefox-vendor/DEBIAN
 mkdir -p firefox-vendor/opt/mozilla
 mkdir -p firefox-vendor/usr/share/applications
+mkdir -p firefox-vendor/usr/bin
 
 # Extract the installer archive
 tar -xjvf firefox-latest.tar.bz2 -C firefox-vendor/opt/mozilla
+
+# Create link to executable
+ln -s -t firefox-vendor/usr/bin /opt/mozilla/firefox/firefox firefox
 
 # Execute the Firefox binary to get the version number
 version=$(firefox-vendor/opt/mozilla/firefox/firefox --version | sed 's/.* //')
