@@ -1,32 +1,64 @@
 #!/bin/bash
 
-# Download the installer archive from Mozilla distribution server
-if [ ! -e firefox-latest.tar.bz2 ]; then
-	wget -O firefox-latest.tar.bz2 'https://download.mozilla.org/?product=firefox-latest&os=linux64&lang=en-US'
+if [ -n "$1" ]; then
+  archString="$1"
+else
+  archString=$(uname -m)
 fi
 
+if [ -z "$archString" ]; then
+  echo "Unable to determine architecture. Please specify it as the first argument."
+fi
+
+# Set architecture
+case "$archString" in
+	"amd64"|"x86_64"|"x86-64"|"x64"|"64")
+		architecture="amd64"
+		downloadOs="linux64"
+		;;
+	"i386"|"i686"|"x86"|"32")
+		architecture="i686"
+		downloadOs="linux"
+		;;
+  *)
+    echo "Unable to recognize architecture $archString"
+    exit 1
+esac
+
+# Download the installer archive from Mozilla distribution server
+if [ ! -e "firefox-latest_$architecture.tar.bz2" ]; then
+	wget -O "firefox-latest_$architecture.tar.bz2" "https://download.mozilla.org/?product=firefox-latest&os=${downloadOs}&lang=en-US"
+fi
+
+pkgname="firefox-vendor_$architecture"
+
 # Make necessary directories
-mkdir firefox-vendor
-mkdir firefox-vendor/DEBIAN
-mkdir -p firefox-vendor/opt/mozilla
-mkdir -p firefox-vendor/usr/share/applications
-mkdir -p firefox-vendor/usr/bin
+mkdir "$pkgname"
+mkdir "$pkgname/DEBIAN"
+mkdir -p "$pkgname/opt/mozilla"
+mkdir -p "$pkgname/usr/share/applications"
+mkdir -p "$pkgname/usr/bin"
 
 # Extract the installer archive
-tar -xjvf firefox-latest.tar.bz2 -C firefox-vendor/opt/mozilla
+tar -xjvf "firefox-latest_$architecture.tar.bz2" -C "$pkgname/opt/mozilla"
 
 # Create link to executable
-ln -s -t firefox-vendor/usr/bin /opt/mozilla/firefox/firefox firefox
+ln -s -t "$pkgname/usr/bin" "$pkgname/opt/mozilla/firefox/firefox" firefox
 
-# Execute the Firefox binary to get the version number
-version=$(firefox-vendor/opt/mozilla/firefox/firefox --version | sed 's/.* //')
+# Get the version from application.ini
+version=$(grep -E "^Version" < "$pkgname/opt/mozilla/firefox/application.ini" | sed 's/.*=//')
+
+if [ -z "$version" ]; then
+  echo "Unable to determine version - not continuing."
+  exit 1
+fi
 
 # Create control file for package
 echo "Package: firefox-vendor
 Version: $version
 Maintainer: $USER
-Architecture: amd64
-Description: Package of the Firefox web browser as released by Mozilla" > firefox-vendor/DEBIAN/control
+Architecture: ${architecture}
+Description: Package of the Firefox web browser as released by Mozilla" > "$pkgname/DEBIAN/control"
 
 # Create desktop entry inside package with appropriate version number
 echo "[Desktop Entry]
@@ -40,19 +72,19 @@ StartupNotify=true
 Terminal=false
 Type=Application
 Categories=Internet;
-Keywords=internet;browser;web;mozilla;" > firefox-vendor/usr/share/applications/firefox.desktop
+Keywords=internet;browser;web;mozilla;" > "$pkgname/usr/share/applications/firefox.desktop"
 
 # Copy post-installation script into the proper place for the package
-cp post-installation.sh firefox-vendor/DEBIAN/postinst
-chmod 755 firefox-vendor/DEBIAN/postinst
-cp pre-remove.sh firefox-vendor/DEBIAN/prerm
-chmod 755 firefox-vendor/DEBIAN/prerm
+cp post-installation.sh "$pkgname/DEBIAN/postinst"
+chmod 755 "$pkgname/DEBIAN/postinst"
+cp pre-remove.sh "$pkgname/DEBIAN/prerm"
+chmod 755 "$pkgname/DEBIAN/prerm"
 
 # Build the package
-chmod g-s firefox-vendor/DEBIAN
-chmod 755 firefox-vendor/DEBIAN
-dpkg-deb --build firefox-vendor
+chmod g-s "$pkgname/DEBIAN"
+chmod 755 "$pkgname/DEBIAN"
+dpkg-deb --build "$pkgname"
 
 # Clean up
-rm firefox-latest.tar.bz2
-rm -r firefox-vendor
+rm "firefox-latest_$architecture.tar.bz2"
+rm -r "$pkgname"
