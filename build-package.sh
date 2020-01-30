@@ -17,7 +17,7 @@ case "$archString" in
 		downloadOs="linux64"
 		;;
 	"i386"|"i686"|"x86"|"32")
-		architecture="i686"
+		architecture="i386"
 		downloadOs="linux"
 		;;
   *)
