@@ -6,6 +6,12 @@ else
   archString=$(uname -m)
 fi
 
+if [ -n "$2" ]; then
+  product="$2"
+else
+  product='firefox-latest'
+fi
+
 if [ -z "$archString" ]; then
   echo "Unable to determine architecture. Please specify it as the first argument."
 fi
@@ -26,11 +32,11 @@ case "$archString" in
 esac
 
 # Download the installer archive from Mozilla distribution server
-if [ ! -e "firefox-latest_$architecture.tar.bz2" ]; then
-	wget -O "firefox-latest_$architecture.tar.bz2" "https://download.mozilla.org/?product=firefox-latest&os=${downloadOs}&lang=en-US"
+if [ ! -e "${product}_${architecture}.tar.bz2" ]; then
+	wget -O "${product}_$architecture.tar.bz2" "https://download.mozilla.org/?product=${product}&os=${downloadOs}&lang=en-US"
 fi
 
-pkgname="firefox-vendor_$architecture"
+pkgname="${product}_$architecture"
 
 # Make necessary directories
 mkdir "$pkgname"
@@ -40,10 +46,10 @@ mkdir -p "$pkgname/usr/share/applications"
 mkdir -p "$pkgname/usr/bin"
 
 # Extract the installer archive
-tar -xjvf "firefox-latest_$architecture.tar.bz2" -C "$pkgname/opt/mozilla"
+tar -xjvf "${product}_$architecture.tar.bz2" -C "$pkgname/opt/mozilla"
 
 # Create link to executable
-ln -s -t "$pkgname/usr/bin" "$pkgname/opt/mozilla/firefox/firefox" firefox
+ln -s -t "$pkgname/usr/bin" "/opt/mozilla/firefox/firefox" firefox
 
 # Get the version from application.ini
 version=$(grep -E "^Version" < "$pkgname/opt/mozilla/firefox/application.ini" | sed 's/.*=//')
@@ -54,16 +60,16 @@ if [ -z "$version" ]; then
 fi
 
 # Create control file for package
-echo "Package: firefox-vendor
-Version: $version
-Maintainer: $USER
+echo "Package: ${product}
+Version: ${version}
+Maintainer: ${USER}
 Architecture: ${architecture}
 Description: Package of the Firefox web browser as released by Mozilla" > "$pkgname/DEBIAN/control"
 
 # Create desktop entry inside package with appropriate version number
 echo "[Desktop Entry]
 Version=$version
-Name=Mozilla Firefox
+Name=$product
 Comment=Web Browser
 GenericName=Web Browser
 Exec=/opt/mozilla/firefox/firefox
