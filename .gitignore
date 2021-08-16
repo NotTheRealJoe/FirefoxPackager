@@ -1,3 +1,4 @@
 firefox-vendor*.deb
 firefox-vendor*/
 .idea
+output/

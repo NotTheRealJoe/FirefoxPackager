@@ -94,3 +94,8 @@ dpkg-deb --build "$pkgname"
 # Clean up
 rm "firefox-latest_$architecture.tar.bz2"
 rm -r "$pkgname"
+
+if [ ! -d "output" ]; then
+  mkdir output
+fi
+mv "${pkgname}.deb" "output/"
