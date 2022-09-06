@@ -1,0 +1,13 @@
+[Desktop Entry]
+Version={{VERSION}}
+Name={{PRODUCT}}
+Comment=Web Browser
+GenericName=Web Browser
+Exec=/opt/mozilla/firefox/firefox %u
+Icon=/opt/mozilla/firefox/browser/chrome/icons/default/default128.png
+StartupNotify=true
+Terminal=false
+Type=Application
+Categories=Internet;
+Keywords=internet;browser;web;mozilla;
+MimeType=x-scheme-handler/http;x-scheme-handler/https

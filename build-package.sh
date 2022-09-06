@@ -67,22 +67,18 @@ Architecture: ${architecture}
 Description: Package of the Firefox web browser as released by Mozilla" > "$pkgname/DEBIAN/control"
 
 # Create desktop entry inside package with appropriate version number
-echo "[Desktop Entry]
-Version=$version
-Name=$product
-Comment=Web Browser
-GenericName=Web Browser
-Exec=/opt/mozilla/firefox/firefox
-Icon=/opt/mozilla/firefox/browser/chrome/icons/default/default128.png
-StartupNotify=true
-Terminal=false
-Type=Application
-Categories=Internet;
-Keywords=internet;browser;web;mozilla;" > "$pkgname/usr/share/applications/firefox.desktop"
+sed -e "s/{{VERSION}}/$version/" -e "s/{{PRODUCT}}/$product/" \
+  < install-files/firefox.desktop \
+  > "$pkgname/usr/share/applications/firefox.desktop"
 
 # Copy post-installation script into the proper place for the package
-cp post-installation.sh "$pkgname/DEBIAN/postinst"
+#cp post-installation.sh "$pkgname/DEBIAN/postinst"
+sed -e "s/{{PRODUCT}}/$product/" \
+  < install-files/post-installation.sh \
+  > "$pkgname/DEBIAN/postinst"
 chmod 755 "$pkgname/DEBIAN/postinst"
+
+# Copy pre-removal script in
 cp pre-remove.sh "$pkgname/DEBIAN/prerm"
 chmod 755 "$pkgname/DEBIAN/prerm"
 
