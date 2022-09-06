@@ -79,7 +79,7 @@ sed -e "s/{{PRODUCT}}/$product/" \
 chmod 755 "$pkgname/DEBIAN/postinst"
 
 # Copy pre-removal script in
-cp pre-remove.sh "$pkgname/DEBIAN/prerm"
+cp install-files/pre-remove.sh "$pkgname/DEBIAN/prerm"
 chmod 755 "$pkgname/DEBIAN/prerm"
 
 # Build the package
