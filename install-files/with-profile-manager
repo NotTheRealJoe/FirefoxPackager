@@ -1,0 +1,7 @@
+#!/bin/bash
+
+## This script provides a path which launches Firefox with the Profile Manager
+## that can be called directly or set as the default browser.
+
+SCRIPT_DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")"
+exec "$SCRIPT_DIR/firefox" --ProfileManager "$@"
