@@ -4,6 +4,10 @@
 update-alternatives --install /usr/bin/gnome-www-browser gnome-www-browser /opt/mozilla/firefox/firefox 0
 update-alternatives --install /usr/bin/x-www-browser x-www-browser /opt/mozilla/firefox/firefox 0
 
+# Install the with-profile-manager script as an option for the default browser
+update-alternatives --install /usr/bin/gnome-www-browser gnome-www-browser /opt/mozilla/firefox/with-profile-manager 1
+update-alternatives --install /usr/bin/x-www-browser x-www-browser /opt/mozilla/firefox/with-profile-manager 1
+
 # Set the new alternative as default
 update-alternatives --set gnome-www-browser /opt/mozilla/firefox/firefox
 update-alternatives --set x-www-browser /opt/mozilla/firefox/firefox

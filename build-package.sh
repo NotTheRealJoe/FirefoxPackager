@@ -48,6 +48,9 @@ mkdir -p "$pkgname/usr/bin"
 # Extract the installer archive
 tar -xjvf "${product}_$architecture.tar.bz2" -C "$pkgname/opt/mozilla"
 
+# Install the with-profile-manager script
+cp "install-files/with-profile-manager" "$pkgname/opt/mozilla/firefox/with-profile-manager"
+
 # Create link to executable
 ln -s -t "$pkgname/usr/bin" "/opt/mozilla/firefox/firefox" firefox
 
