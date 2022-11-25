@@ -12,13 +12,28 @@ on the system, so will take up more disk space when installed.
 Make sure to uninstall any Firefox package provided by your distribution
 before installing the generated package.
 
+## Script Usage
+```shell
+./build-package.sh [ARCH] [PRODUCT_NAME]
+```
+- `ARCH` must be one of "amd64" "x86_64" "x86-64" "x64" "64" "i386" "i686" "x86"
+  "32". Defaults to the current system's architecture, e.g. the value reported
+  by `uname -m`. If the current system's architecture is not supported, you must
+  specify a different target architecture for the script to work.
+- `PRODUCT_NAME` should usually be left to the default. It determines the
+  product to download from the Mozilla distribution server. The default value is
+  `firefox-latest`. It may be possible to generate a package for a different
+  Mozilla product by changing this field, but this is untested.
+
 ## Requirements
- - An x86 or amd64 architecture system. Specifically, the value reported by
- `uname -m` must be one of the following:
+ - The system used to build the package *does not* need to be the same
+   architecture that your package is targeting, however the targeted system may
+   only be an x86 or amd64 architecture system. Specifically, the value
+   reported by `uname -m` must be one of the following:
     ```
     "amd64" "x86_64" "x86-64" "x64" "64" "i386" "i686" "x86" "32"
     ```
-- Debian system with `dpkg` in PATH.
+- Debian system with the `dpkg-dev` utility in PATH.
 
 ## Installing Firefox
 1. Make sure that any packages provided by your distribution have been
