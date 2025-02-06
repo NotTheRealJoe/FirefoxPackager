@@ -32,8 +32,8 @@ case "$archString" in
 esac
 
 # Download the installer archive from Mozilla distribution server
-if [ ! -e "${product}_${architecture}.tar.bz2" ]; then
-	wget -O "${product}_$architecture.tar.bz2" "https://download.mozilla.org/?product=${product}&os=${downloadOs}&lang=en-US"
+if [ ! -e "${product}_${architecture}.tar.xz" ]; then
+	wget -O "${product}_$architecture.tar.xz" "https://download.mozilla.org/?product=${product}&os=${downloadOs}&lang=en-US"
 fi
 
 pkgname="${product}_$architecture"
@@ -46,7 +46,7 @@ mkdir -p "$pkgname/usr/share/applications"
 mkdir -p "$pkgname/usr/bin"
 
 # Extract the installer archive
-tar -xjvf "${product}_$architecture.tar.bz2" -C "$pkgname/opt/mozilla"
+tar -xJvf "${product}_$architecture.tar.xz" -C "$pkgname/opt/mozilla"
 
 # Install the with-profile-manager script
 cp "install-files/with-profile-manager" "$pkgname/opt/mozilla/firefox/with-profile-manager"
@@ -91,7 +91,7 @@ chmod 755 "$pkgname/DEBIAN"
 dpkg-deb --build "$pkgname"
 
 # Clean up
-rm "firefox-latest_$architecture.tar.bz2"
+rm "firefox-latest_$architecture.tar.xz"
 rm -r "$pkgname"
 
 if [ ! -d "output" ]; then
